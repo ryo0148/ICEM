@@ -1,1 +1,2423 @@
-a
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Poster Presentation Practice</title>
+  <style>
+    :root {
+      --bg: #f4efe7;
+      --panel: rgba(255,255,255,0.9);
+      --text: #1f1b18;
+      --muted: #6d655d;
+      --line: rgba(64, 49, 34, 0.14);
+      --accent: #00695c;
+      --accent-soft: rgba(0, 105, 92, 0.10);
+      --active: #c25116;
+      --active-soft: rgba(194, 81, 22, 0.10);
+      --shadow: 0 18px 48px rgba(44, 30, 16, 0.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans JP", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(0, 105, 92, 0.08), transparent 30%),
+        radial-gradient(circle at top right, rgba(194, 81, 22, 0.08), transparent 28%),
+        linear-gradient(180deg, #faf7f2 0%, var(--bg) 100%);
+    }
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+    .hero {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(0, 1.12fr) minmax(300px, 0.88fr);
+      align-items: start;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .now-playing {
+      padding: 28px;
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+    .controls {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 18px;
+    }
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 50px);
+      line-height: 1.02;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .current-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pill, .mini-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.78);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .text-box {
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(194, 81, 22, 0.14);
+      background: linear-gradient(135deg, rgba(255,255,255,0.99), rgba(255,255,255,0.9));
+      min-height: 170px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    .text-box h2 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .english-current {
+      font-size: clamp(23px, 2.4vw, 31px);
+      line-height: 1.6;
+      font-weight: 600;
+      min-width: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .japanese-current {
+      font-size: 19px;
+      line-height: 1.75;
+      min-width: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .word {
+      padding: 0.04em 0.08em;
+      border-radius: 0.2em;
+    }
+    .word.current-word {
+      background: rgba(194, 81, 22, 0.18);
+      color: #91370e;
+    }
+    .status-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(31, 27, 23, 0.08);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--active));
+    }
+    .times {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .switch {
+      position: relative;
+      display: inline-flex;
+      width: 54px;
+      height: 32px;
+    }
+    .switch input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .slider {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: rgba(31, 27, 23, 0.12);
+      border: 1px solid var(--line);
+      position: relative;
+    }
+    .slider::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: transform 140ms ease;
+    }
+    .switch input:checked + .slider {
+      background: rgba(0, 105, 92, 0.22);
+    }
+    .switch input:checked + .slider::after {
+      transform: translateX(22px);
+    }
+    .section-title {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .section-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .section-chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.76);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 15px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .section-chip.active {
+      background: var(--accent-soft);
+      border-color: rgba(0, 105, 92, 0.28);
+      color: var(--accent);
+    }
+    .list-panel {
+      margin-top: 22px;
+      padding: 20px;
+    }
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .list-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .list-header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .sentence-list {
+      display: grid;
+      gap: 8px;
+      max-height: 62vh;
+      overflow: auto;
+      padding-right: 6px;
+    }
+    .sentence {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+      text-align: left;
+      padding: 15px 16px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: rgba(255,255,255,0.56);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .sentence.active {
+      background: var(--active-soft);
+      border-color: rgba(194, 81, 22, 0.24);
+    }
+    .sentence.current {
+      background: linear-gradient(135deg, rgba(194,81,22,0.16), rgba(0,105,92,0.08));
+      border-color: rgba(194, 81, 22, 0.34);
+    }
+    .sentence-number {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+    .sentence-number strong {
+      color: var(--text);
+      font-size: 20px;
+      line-height: 1;
+    }
+    .sentence-text {
+      font-size: 15px;
+      line-height: 1.62;
+    }
+    .sentence-jp {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .controls { position: static; }
+      .sentence-list { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="panel now-playing">
+        <div>
+          <div class="eyebrow">Poster Bilingual</div>
+          <h1>Poster Presentation Practice</h1>
+          <p class="subtitle">Lightweight public version with external English and Japanese audio assets.</p>
+        </div>
+        <div class="current-meta">
+          <span class="pill" id="currentIndex">Sentence 1</span>
+          <span class="pill" id="currentSection">Opening</span>
+          <span class="pill" id="currentMode">English</span>
+        </div>
+        <div class="text-box">
+          <h2>English</h2>
+          <div class="english-current" id="currentText"></div>
+        </div>
+        <div class="text-box">
+          <h2>Japanese Translation</h2>
+          <div class="japanese-current" id="currentTranslation"></div>
+        </div>
+      </div>
+
+      <div class="panel controls">
+        <audio id="audio" controls preload="metadata"></audio>
+        <div class="status-grid">
+          <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="times">
+            <span id="elapsed">00:00</span>
+            <span id="remaining">-00:00</span>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span class="mini-pill">Auto-scroll list</span>
+          <label class="switch">
+            <input id="autoScrollToggle" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="mini-pill">Loop sequence</span>
+          <label class="switch">
+            <input id="loopToggle" type="checkbox">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span class="mini-pill">Alternate EN / JA</span>
+          <label class="switch">
+            <input id="alternateToggle" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="sections">
+          <p class="section-title">Sections</p>
+          <div class="section-row" id="sectionRow"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="list-header">
+        <h2>Sentence Navigator</h2>
+        <div class="list-header-meta">
+          <span class="mini-pill">Word highlight</span>
+          <span class="mini-pill">External audio assets</span>
+          <span class="mini-pill">20 cues</span>
+        </div>
+      </div>
+      <div class="sentence-list" id="sentenceList"></div>
+    </section>
+  </div>
+
+  <script>
+    const cues = [
+  {
+    "index": 1,
+    "start": 0.0,
+    "end": 5.061,
+    "speechEnd": 2.061,
+    "duration": 5.061,
+    "text": "Hello everyone.",
+    "words": [
+      {
+        "word": "Hello",
+        "start": 0.0,
+        "end": 0.52
+      },
+      {
+        "word": "everyone.",
+        "start": 1.2,
+        "end": 1.22
+      }
+    ],
+    "transcriptText": "Hello, everyone."
+  },
+  {
+    "index": 2,
+    "start": 5.061,
+    "end": 11.28,
+    "speechEnd": 8.28,
+    "duration": 6.219,
+    "text": "Thank you for visiting our poster.",
+    "words": [
+      {
+        "word": "Thank",
+        "start": 5.061,
+        "end": 5.701
+      },
+      {
+        "word": "you",
+        "start": 5.701,
+        "end": 5.881
+      },
+      {
+        "word": "for",
+        "start": 5.881,
+        "end": 6.401
+      },
+      {
+        "word": "visiting",
+        "start": 6.401,
+        "end": 6.761
+      },
+      {
+        "word": "our",
+        "start": 6.761,
+        "end": 7.141
+      },
+      {
+        "word": "poster.",
+        "start": 7.141,
+        "end": 7.501
+      }
+    ],
+    "transcriptText": "Thank you for visiting our poster."
+  },
+  {
+    "index": 3,
+    "start": 11.28,
+    "end": 26.219,
+    "speechEnd": 23.219,
+    "duration": 14.938,
+    "text": "My name is Ryonosuke Otsuka, and I will explain our study on improving the efficiency of a memory motor for home-appliance drive systems.",
+    "words": [
+      {
+        "word": "My",
+        "start": 11.28,
+        "end": 11.78
+      },
+      {
+        "word": "name",
+        "start": 11.78,
+        "end": 12.14
+      },
+      {
+        "word": "is",
+        "start": 12.14,
+        "end": 12.74
+      },
+      {
+        "word": "Ryonosuke",
+        "start": 12.74,
+        "end": 13.52
+      },
+      {
+        "word": "Otsuka,",
+        "start": 13.52,
+        "end": 14.14
+      },
+      {
+        "word": "and",
+        "start": 15.04,
+        "end": 15.08
+      },
+      {
+        "word": "I",
+        "start": 15.08,
+        "end": 15.34
+      },
+      {
+        "word": "will",
+        "start": 15.34,
+        "end": 15.64
+      },
+      {
+        "word": "explain",
+        "start": 15.64,
+        "end": 15.92
+      },
+      {
+        "word": "our",
+        "start": 15.92,
+        "end": 16.28
+      },
+      {
+        "word": "study",
+        "start": 16.28,
+        "end": 16.98
+      },
+      {
+        "word": "on",
+        "start": 16.98,
+        "end": 17.34
+      },
+      {
+        "word": "improving",
+        "start": 17.34,
+        "end": 17.76
+      },
+      {
+        "word": "the",
+        "start": 17.76,
+        "end": 18.2
+      },
+      {
+        "word": "efficiency",
+        "start": 18.2,
+        "end": 18.68
+      },
+      {
+        "word": "of",
+        "start": 18.68,
+        "end": 19.3
+      },
+      {
+        "word": "a",
+        "start": 19.3,
+        "end": 19.6
+      },
+      {
+        "word": "memory",
+        "start": 19.6,
+        "end": 19.92
+      },
+      {
+        "word": "motor",
+        "start": 19.92,
+        "end": 20.28
+      },
+      {
+        "word": "for",
+        "start": 20.28,
+        "end": 20.94
+      },
+      {
+        "word": "home-appliance",
+        "start": 20.94,
+        "end": 21.18
+      },
+      {
+        "word": "drive",
+        "start": 21.18,
+        "end": 21.68
+      },
+      {
+        "word": "systems.",
+        "start": 21.68,
+        "end": 22.12
+      }
+    ],
+    "transcriptText": "My name is Ryonosuke Otsuka, and I will explain our study on improving the efficiency of a memory motor for home-appliance drive systems."
+  },
+  {
+    "index": 4,
+    "start": 26.219,
+    "end": 36.282,
+    "speechEnd": 33.282,
+    "duration": 10.064,
+    "text": "This poster focuses on one key issue in conventional memory motors.",
+    "words": [
+      {
+        "word": "This",
+        "start": 26.219,
+        "end": 27.059
+      },
+      {
+        "word": "poster",
+        "start": 27.059,
+        "end": 27.539
+      },
+      {
+        "word": "focuses",
+        "start": 27.539,
+        "end": 28.079
+      },
+      {
+        "word": "on",
+        "start": 28.079,
+        "end": 28.599
+      },
+      {
+        "word": "one",
+        "start": 28.599,
+        "end": 29.039
+      },
+      {
+        "word": "key",
+        "start": 29.039,
+        "end": 29.439
+      },
+      {
+        "word": "issue",
+        "start": 29.439,
+        "end": 29.899
+      },
+      {
+        "word": "in",
+        "start": 29.899,
+        "end": 30.559
+      },
+      {
+        "word": "conventional",
+        "start": 30.559,
+        "end": 31.419
+      },
+      {
+        "word": "memory",
+        "start": 31.419,
+        "end": 32.139
+      },
+      {
+        "word": "motors.",
+        "start": 32.139,
+        "end": 32.479
+      }
+    ],
+    "transcriptText": "This poster focuses on one key issue in conventional memory motors."
+  },
+  {
+    "index": 5,
+    "start": 36.282,
+    "end": 49.277,
+    "speechEnd": 46.277,
+    "duration": 12.995,
+    "text": "In the demagnetized state, the conventional V-shaped rotor creates strong q-axis harmonic flux variation.",
+    "words": [
+      {
+        "word": "In",
+        "start": 36.282,
+        "end": 36.682
+      },
+      {
+        "word": "the",
+        "start": 36.682,
+        "end": 36.982
+      },
+      {
+        "word": "demagnetized",
+        "start": 36.982,
+        "end": 37.962
+      },
+      {
+        "word": "state,",
+        "start": 37.962,
+        "end": 38.502
+      },
+      {
+        "word": "the",
+        "start": 39.062,
+        "end": 39.342
+      },
+      {
+        "word": "conventional",
+        "start": 39.342,
+        "end": 39.922
+      },
+      {
+        "word": "V-shaped",
+        "start": 39.922,
+        "end": 40.442
+      },
+      {
+        "word": "rotor",
+        "start": 40.442,
+        "end": 40.762
+      },
+      {
+        "word": "creates",
+        "start": 40.762,
+        "end": 41.262
+      },
+      {
+        "word": "strong",
+        "start": 41.262,
+        "end": 42.282
+      },
+      {
+        "word": "q-axis",
+        "start": 42.282,
+        "end": 42.922
+      },
+      {
+        "word": "harmonic",
+        "start": 42.922,
+        "end": 43.282
+      },
+      {
+        "word": "flux",
+        "start": 43.282,
+        "end": 43.742
+      },
+      {
+        "word": "variation.",
+        "start": 43.742,
+        "end": 44.402
+      }
+    ],
+    "transcriptText": "In the demagnetized state, the conventional V-shaped rotor creates strong q-axis harmonic flux variation."
+  },
+  {
+    "index": 6,
+    "start": 49.277,
+    "end": 61.051,
+    "speechEnd": 58.051,
+    "duration": 11.774,
+    "text": "That harmonic flux increases iron loss and prevents efficient operation in the high-speed region.",
+    "words": [
+      {
+        "word": "That",
+        "start": 49.277,
+        "end": 49.837
+      },
+      {
+        "word": "harmonic",
+        "start": 49.837,
+        "end": 50.477
+      },
+      {
+        "word": "flux",
+        "start": 50.477,
+        "end": 51.037
+      },
+      {
+        "word": "increases",
+        "start": 51.037,
+        "end": 52.137
+      },
+      {
+        "word": "iron",
+        "start": 52.137,
+        "end": 52.657
+      },
+      {
+        "word": "loss",
+        "start": 52.657,
+        "end": 53.137
+      },
+      {
+        "word": "and",
+        "start": 53.137,
+        "end": 53.977
+      },
+      {
+        "word": "prevents",
+        "start": 53.977,
+        "end": 54.317
+      },
+      {
+        "word": "efficient",
+        "start": 54.317,
+        "end": 54.977
+      },
+      {
+        "word": "operation",
+        "start": 54.977,
+        "end": 55.637
+      },
+      {
+        "word": "in",
+        "start": 55.637,
+        "end": 56.017
+      },
+      {
+        "word": "the",
+        "start": 56.017,
+        "end": 56.217
+      },
+      {
+        "word": "high-speed",
+        "start": 56.217,
+        "end": 56.597
+      },
+      {
+        "word": "region.",
+        "start": 56.597,
+        "end": 56.837
+      }
+    ],
+    "transcriptText": "That harmonic flux increases iron loss and prevents efficient operation in the high-speed region."
+  },
+  {
+    "index": 7,
+    "start": 61.051,
+    "end": 70.743,
+    "speechEnd": 67.743,
+    "duration": 9.692,
+    "text": "To solve this problem, we propose a spoke-based inverted triangle magnet arrangement.",
+    "words": [
+      {
+        "word": "To",
+        "start": 61.051,
+        "end": 61.351
+      },
+      {
+        "word": "solve",
+        "start": 61.351,
+        "end": 61.691
+      },
+      {
+        "word": "this",
+        "start": 61.691,
+        "end": 62.151
+      },
+      {
+        "word": "problem,",
+        "start": 62.151,
+        "end": 62.651
+      },
+      {
+        "word": "we",
+        "start": 62.911,
+        "end": 63.311
+      },
+      {
+        "word": "propose",
+        "start": 63.311,
+        "end": 63.691
+      },
+      {
+        "word": "a",
+        "start": 63.691,
+        "end": 64.131
+      },
+      {
+        "word": "spoke-based",
+        "start": 64.131,
+        "end": 64.411
+      },
+      {
+        "word": "inverted",
+        "start": 64.411,
+        "end": 64.951
+      },
+      {
+        "word": "triangle",
+        "start": 64.951,
+        "end": 65.611
+      },
+      {
+        "word": "magnet",
+        "start": 65.611,
+        "end": 66.231
+      },
+      {
+        "word": "arrangement.",
+        "start": 66.231,
+        "end": 66.711
+      }
+    ],
+    "transcriptText": "To solve this problem, we propose a spoken-based inverted triangle magnet arrangement."
+  },
+  {
+    "index": 8,
+    "start": 70.743,
+    "end": 82.326,
+    "speechEnd": 79.326,
+    "duration": 11.583,
+    "text": "We also examine a salient-pole rotor version to suppress the q-axis flux variation even further.",
+    "words": [
+      {
+        "word": "We",
+        "start": 70.743,
+        "end": 71.163
+      },
+      {
+        "word": "also",
+        "start": 71.163,
+        "end": 71.843
+      },
+      {
+        "word": "examine",
+        "start": 71.843,
+        "end": 72.383
+      },
+      {
+        "word": "a",
+        "start": 72.383,
+        "end": 72.863
+      },
+      {
+        "word": "salient-pole",
+        "start": 72.863,
+        "end": 73.183
+      },
+      {
+        "word": "rotor",
+        "start": 73.183,
+        "end": 73.623
+      },
+      {
+        "word": "version",
+        "start": 73.623,
+        "end": 74.103
+      },
+      {
+        "word": "to",
+        "start": 74.103,
+        "end": 74.643
+      },
+      {
+        "word": "suppress",
+        "start": 74.643,
+        "end": 75.303
+      },
+      {
+        "word": "the",
+        "start": 75.303,
+        "end": 75.803
+      },
+      {
+        "word": "q-axis",
+        "start": 75.803,
+        "end": 76.343
+      },
+      {
+        "word": "flux",
+        "start": 76.343,
+        "end": 76.423
+      },
+      {
+        "word": "variation",
+        "start": 76.423,
+        "end": 76.863
+      },
+      {
+        "word": "even",
+        "start": 76.863,
+        "end": 77.303
+      },
+      {
+        "word": "further.",
+        "start": 77.303,
+        "end": 78.023
+      }
+    ],
+    "transcriptText": "We also examine a salient-pole rotor version to suppress the q-axis flux variation even further."
+  },
+  {
+    "index": 9,
+    "start": 82.326,
+    "end": 91.964,
+    "speechEnd": 88.964,
+    "duration": 9.639,
+    "text": "On the center-left side of the poster, you can see the motor structure and design concept.",
+    "words": [
+      {
+        "word": "On",
+        "start": 82.326,
+        "end": 82.566
+      },
+      {
+        "word": "the",
+        "start": 82.566,
+        "end": 82.826
+      },
+      {
+        "word": "center-left",
+        "start": 82.826,
+        "end": 83.226
+      },
+      {
+        "word": "side",
+        "start": 83.226,
+        "end": 83.546
+      },
+      {
+        "word": "of",
+        "start": 83.546,
+        "end": 83.866
+      },
+      {
+        "word": "the",
+        "start": 83.866,
+        "end": 84.046
+      },
+      {
+        "word": "poster,",
+        "start": 84.046,
+        "end": 84.726
+      },
+      {
+        "word": "you",
+        "start": 84.726,
+        "end": 84.726
+      },
+      {
+        "word": "can",
+        "start": 85.166,
+        "end": 85.286
+      },
+      {
+        "word": "see",
+        "start": 85.286,
+        "end": 85.586
+      },
+      {
+        "word": "the",
+        "start": 85.586,
+        "end": 85.746
+      },
+      {
+        "word": "motor",
+        "start": 85.746,
+        "end": 85.966
+      },
+      {
+        "word": "structure",
+        "start": 85.966,
+        "end": 86.266
+      },
+      {
+        "word": "and",
+        "start": 86.266,
+        "end": 86.786
+      },
+      {
+        "word": "design",
+        "start": 86.786,
+        "end": 87.266
+      },
+      {
+        "word": "concept.",
+        "start": 87.266,
+        "end": 87.666
+      }
+    ],
+    "transcriptText": "On the center-left side of the poster, you can see the motor structure and design concept."
+  },
+  {
+    "index": 10,
+    "start": 91.964,
+    "end": 104.226,
+    "speechEnd": 101.226,
+    "duration": 12.262,
+    "text": "The main point is that the proposed structure smooths the air-gap flux distribution in the demagnetized state.",
+    "words": [
+      {
+        "word": "The",
+        "start": 91.964,
+        "end": 92.784
+      },
+      {
+        "word": "main",
+        "start": 92.784,
+        "end": 93.264
+      },
+      {
+        "word": "point",
+        "start": 93.264,
+        "end": 93.724
+      },
+      {
+        "word": "is",
+        "start": 93.724,
+        "end": 94.444
+      },
+      {
+        "word": "that",
+        "start": 94.444,
+        "end": 94.644
+      },
+      {
+        "word": "the",
+        "start": 94.644,
+        "end": 94.964
+      },
+      {
+        "word": "proposed",
+        "start": 94.964,
+        "end": 95.304
+      },
+      {
+        "word": "structure",
+        "start": 95.304,
+        "end": 95.944
+      },
+      {
+        "word": "smooths",
+        "start": 95.944,
+        "end": 96.744
+      },
+      {
+        "word": "the",
+        "start": 96.744,
+        "end": 97.084
+      },
+      {
+        "word": "air-gap",
+        "start": 97.084,
+        "end": 97.184
+      },
+      {
+        "word": "flux",
+        "start": 97.184,
+        "end": 97.404
+      },
+      {
+        "word": "distribution",
+        "start": 97.404,
+        "end": 97.824
+      },
+      {
+        "word": "in",
+        "start": 97.824,
+        "end": 98.584
+      },
+      {
+        "word": "the",
+        "start": 98.584,
+        "end": 99.324
+      },
+      {
+        "word": "demagnetized",
+        "start": 99.324,
+        "end": 99.624
+      },
+      {
+        "word": "state.",
+        "start": 99.624,
+        "end": 100.484
+      }
+    ],
+    "transcriptText": "The main point is that the proposed structure smooths the air-gap flux distribution in the demagnetized state."
+  },
+  {
+    "index": 11,
+    "start": 104.226,
+    "end": 120.567,
+    "speechEnd": 117.567,
+    "duration": 16.34,
+    "text": "On the right side, the numerical results show that the total harmonic distortion of the air-gap flux density decreases from 23.5 percent to 18.3 percent.",
+    "words": [
+      {
+        "word": "On",
+        "start": 104.226,
+        "end": 104.406
+      },
+      {
+        "word": "the",
+        "start": 104.406,
+        "end": 104.646
+      },
+      {
+        "word": "right",
+        "start": 104.646,
+        "end": 104.946
+      },
+      {
+        "word": "side,",
+        "start": 104.946,
+        "end": 105.406
+      },
+      {
+        "word": "the",
+        "start": 105.706,
+        "end": 106.006
+      },
+      {
+        "word": "numerical",
+        "start": 106.006,
+        "end": 106.386
+      },
+      {
+        "word": "results",
+        "start": 106.386,
+        "end": 106.946
+      },
+      {
+        "word": "show",
+        "start": 106.946,
+        "end": 107.346
+      },
+      {
+        "word": "that",
+        "start": 107.346,
+        "end": 107.566
+      },
+      {
+        "word": "the",
+        "start": 107.566,
+        "end": 107.926
+      },
+      {
+        "word": "total",
+        "start": 107.926,
+        "end": 108.166
+      },
+      {
+        "word": "harmonic",
+        "start": 108.166,
+        "end": 108.686
+      },
+      {
+        "word": "distortion",
+        "start": 108.686,
+        "end": 109.286
+      },
+      {
+        "word": "of",
+        "start": 109.286,
+        "end": 109.786
+      },
+      {
+        "word": "the",
+        "start": 109.786,
+        "end": 110.186
+      },
+      {
+        "word": "air-gap",
+        "start": 110.186,
+        "end": 110.306
+      },
+      {
+        "word": "flux",
+        "start": 110.306,
+        "end": 110.526
+      },
+      {
+        "word": "density",
+        "start": 110.526,
+        "end": 110.926
+      },
+      {
+        "word": "decreases",
+        "start": 110.926,
+        "end": 111.506
+      },
+      {
+        "word": "from",
+        "start": 111.506,
+        "end": 112.466
+      },
+      {
+        "word": "23.5",
+        "start": 112.466,
+        "end": 113.046
+      },
+      {
+        "word": "percent",
+        "start": 113.046,
+        "end": 113.626
+      },
+      {
+        "word": "to",
+        "start": 113.626,
+        "end": 114.466
+      },
+      {
+        "word": "18.3",
+        "start": 114.466,
+        "end": 114.926
+      },
+      {
+        "word": "percent.",
+        "start": 114.926,
+        "end": 115.626
+      }
+    ],
+    "transcriptText": "On the right side, the numerical results show that the total harmonic distortion of the air-gap flux density decreases from 23.5 percent to 18.3 percent."
+  },
+  {
+    "index": 12,
+    "start": 120.567,
+    "end": 132.638,
+    "speechEnd": 129.638,
+    "duration": 12.072,
+    "text": "This reduction leads directly to lower iron loss and a wider high-efficiency operating range at high speed.",
+    "words": [
+      {
+        "word": "This",
+        "start": 120.567,
+        "end": 121.107
+      },
+      {
+        "word": "reduction",
+        "start": 121.107,
+        "end": 121.767
+      },
+      {
+        "word": "leads",
+        "start": 121.767,
+        "end": 122.407
+      },
+      {
+        "word": "directly",
+        "start": 122.407,
+        "end": 123.087
+      },
+      {
+        "word": "to",
+        "start": 123.087,
+        "end": 123.587
+      },
+      {
+        "word": "lower",
+        "start": 123.587,
+        "end": 123.907
+      },
+      {
+        "word": "iron",
+        "start": 123.907,
+        "end": 124.347
+      },
+      {
+        "word": "loss",
+        "start": 124.347,
+        "end": 124.827
+      },
+      {
+        "word": "and",
+        "start": 124.827,
+        "end": 125.247
+      },
+      {
+        "word": "a",
+        "start": 125.247,
+        "end": 125.927
+      },
+      {
+        "word": "wider",
+        "start": 125.927,
+        "end": 125.927
+      },
+      {
+        "word": "high-efficiency",
+        "start": 125.927,
+        "end": 126.447
+      },
+      {
+        "word": "operating",
+        "start": 126.447,
+        "end": 126.927
+      },
+      {
+        "word": "range",
+        "start": 126.927,
+        "end": 127.687
+      },
+      {
+        "word": "at",
+        "start": 127.687,
+        "end": 128.107
+      },
+      {
+        "word": "high",
+        "start": 128.107,
+        "end": 128.467
+      },
+      {
+        "word": "speed.",
+        "start": 128.467,
+        "end": 128.867
+      }
+    ],
+    "transcriptText": "This reduction leads directly to lower iron loss and a wider high-efficiency operating range at high speed."
+  },
+  {
+    "index": 13,
+    "start": 132.638,
+    "end": 143.063,
+    "speechEnd": 140.063,
+    "duration": 10.425,
+    "text": "At the same time, the torque output remains comparable to that of the conventional motor.",
+    "words": [
+      {
+        "word": "At",
+        "start": 132.638,
+        "end": 133.298
+      },
+      {
+        "word": "the",
+        "start": 133.298,
+        "end": 133.598
+      },
+      {
+        "word": "same",
+        "start": 133.598,
+        "end": 133.998
+      },
+      {
+        "word": "time,",
+        "start": 133.998,
+        "end": 134.478
+      },
+      {
+        "word": "the",
+        "start": 134.838,
+        "end": 135.178
+      },
+      {
+        "word": "torque",
+        "start": 135.178,
+        "end": 135.418
+      },
+      {
+        "word": "output",
+        "start": 135.418,
+        "end": 135.878
+      },
+      {
+        "word": "remains",
+        "start": 135.878,
+        "end": 136.358
+      },
+      {
+        "word": "comparable",
+        "start": 136.358,
+        "end": 136.998
+      },
+      {
+        "word": "to",
+        "start": 136.998,
+        "end": 137.938
+      },
+      {
+        "word": "that",
+        "start": 137.938,
+        "end": 138.278
+      },
+      {
+        "word": "of",
+        "start": 138.278,
+        "end": 138.458
+      },
+      {
+        "word": "the",
+        "start": 138.458,
+        "end": 138.658
+      },
+      {
+        "word": "conventional",
+        "start": 138.658,
+        "end": 139.298
+      },
+      {
+        "word": "motor.",
+        "start": 139.298,
+        "end": 139.658
+      }
+    ],
+    "transcriptText": "At the same time, the torque output remains comparable to that of the conventional motor."
+  },
+  {
+    "index": 14,
+    "start": 143.063,
+    "end": 149.898,
+    "speechEnd": 146.898,
+    "duration": 6.835,
+    "text": "We also confirmed a mechanical benefit.",
+    "words": [
+      {
+        "word": "We",
+        "start": 143.063,
+        "end": 143.323
+      },
+      {
+        "word": "also",
+        "start": 143.323,
+        "end": 143.803
+      },
+      {
+        "word": "confirmed",
+        "start": 143.803,
+        "end": 144.503
+      },
+      {
+        "word": "a",
+        "start": 144.503,
+        "end": 145.783
+      },
+      {
+        "word": "mechanical",
+        "start": 145.783,
+        "end": 145.803
+      },
+      {
+        "word": "benefit.",
+        "start": 145.803,
+        "end": 146.223
+      }
+    ],
+    "transcriptText": "We also confirmed a mechanical benefit."
+  },
+  {
+    "index": 15,
+    "start": 149.898,
+    "end": 166.971,
+    "speechEnd": 163.971,
+    "duration": 17.072,
+    "text": "At twenty thousand revolutions per minute, the maximum von Mises stress decreases from 346 megapascals to 291 megapascals.",
+    "words": [
+      {
+        "word": "At",
+        "start": 149.898,
+        "end": 150.299
+      },
+      {
+        "word": "twenty",
+        "start": 150.299,
+        "end": 150.898
+      },
+      {
+        "word": "thousand",
+        "start": 150.898,
+        "end": 151.479
+      },
+      {
+        "word": "revolutions",
+        "start": 151.479,
+        "end": 152.178
+      },
+      {
+        "word": "per",
+        "start": 152.178,
+        "end": 152.698
+      },
+      {
+        "word": "minute,",
+        "start": 152.698,
+        "end": 153.018
+      },
+      {
+        "word": "the",
+        "start": 153.859,
+        "end": 154.038
+      },
+      {
+        "word": "maximum",
+        "start": 154.038,
+        "end": 154.679
+      },
+      {
+        "word": "von",
+        "start": 154.679,
+        "end": 155.478
+      },
+      {
+        "word": "Mises",
+        "start": 155.478,
+        "end": 155.478
+      },
+      {
+        "word": "stress",
+        "start": 155.478,
+        "end": 156.239
+      },
+      {
+        "word": "decreases",
+        "start": 156.239,
+        "end": 157.058
+      },
+      {
+        "word": "from",
+        "start": 157.058,
+        "end": 157.598
+      },
+      {
+        "word": "346",
+        "start": 157.618,
+        "end": 159.018
+      },
+      {
+        "word": "megapascals",
+        "start": 159.018,
+        "end": 160.018
+      },
+      {
+        "word": "to",
+        "start": 160.018,
+        "end": 161.058
+      },
+      {
+        "word": "291",
+        "start": 161.058,
+        "end": 162.478
+      },
+      {
+        "word": "megapascals.",
+        "start": 162.478,
+        "end": 163.518
+      }
+    ],
+    "transcriptText": "At twenty thousand revolutions per minute, the maximum von Mises stress decreases from 346 megapascals to 291 megapascals."
+  },
+  {
+    "index": 16,
+    "start": 166.971,
+    "end": 175.388,
+    "speechEnd": 172.388,
+    "duration": 8.418,
+    "text": "At the bottom of the poster, we show prototype verification.",
+    "words": [
+      {
+        "word": "At",
+        "start": 166.971,
+        "end": 167.191
+      },
+      {
+        "word": "the",
+        "start": 167.191,
+        "end": 167.791
+      },
+      {
+        "word": "bottom",
+        "start": 167.791,
+        "end": 167.791
+      },
+      {
+        "word": "of",
+        "start": 167.791,
+        "end": 168.131
+      },
+      {
+        "word": "the",
+        "start": 168.131,
+        "end": 168.891
+      },
+      {
+        "word": "poster,",
+        "start": 168.891,
+        "end": 168.891
+      },
+      {
+        "word": "we",
+        "start": 169.471,
+        "end": 169.711
+      },
+      {
+        "word": "show",
+        "start": 169.711,
+        "end": 170.151
+      },
+      {
+        "word": "prototype",
+        "start": 170.151,
+        "end": 171.031
+      },
+      {
+        "word": "verification.",
+        "start": 171.031,
+        "end": 171.851
+      }
+    ],
+    "transcriptText": "At the bottom of the poster, we show prototype verification."
+  },
+  {
+    "index": 17,
+    "start": 175.388,
+    "end": 188.436,
+    "speechEnd": 185.436,
+    "duration": 13.047,
+    "text": "The measured induced voltage confirms that the motor can switch between magnetized and demagnetized states as intended.",
+    "words": [
+      {
+        "word": "The",
+        "start": 175.388,
+        "end": 176.328
+      },
+      {
+        "word": "measured",
+        "start": 176.328,
+        "end": 176.749
+      },
+      {
+        "word": "induced",
+        "start": 176.749,
+        "end": 177.349
+      },
+      {
+        "word": "voltage",
+        "start": 177.349,
+        "end": 177.968
+      },
+      {
+        "word": "confirms",
+        "start": 177.968,
+        "end": 178.829
+      },
+      {
+        "word": "that",
+        "start": 178.829,
+        "end": 179.089
+      },
+      {
+        "word": "the",
+        "start": 179.089,
+        "end": 179.608
+      },
+      {
+        "word": "motor",
+        "start": 179.608,
+        "end": 179.608
+      },
+      {
+        "word": "can",
+        "start": 179.608,
+        "end": 180.048
+      },
+      {
+        "word": "switch",
+        "start": 180.048,
+        "end": 180.369
+      },
+      {
+        "word": "between",
+        "start": 180.369,
+        "end": 180.968
+      },
+      {
+        "word": "magnetized",
+        "start": 180.968,
+        "end": 181.869
+      },
+      {
+        "word": "and",
+        "start": 181.869,
+        "end": 182.508
+      },
+      {
+        "word": "demagnetized",
+        "start": 182.508,
+        "end": 183.609
+      },
+      {
+        "word": "states",
+        "start": 183.609,
+        "end": 184.048
+      },
+      {
+        "word": "as",
+        "start": 184.048,
+        "end": 184.628
+      },
+      {
+        "word": "intended.",
+        "start": 184.628,
+        "end": 184.909
+      }
+    ],
+    "transcriptText": "The measured induced voltage confirms that the motor can switch between magnetized and demagnetized states as intended."
+  },
+  {
+    "index": 18,
+    "start": 188.436,
+    "end": 199.838,
+    "speechEnd": 196.838,
+    "duration": 11.402,
+    "text": "So, both the numerical analysis and the prototype result support the effectiveness of the proposed rotor structure.",
+    "words": [
+      {
+        "word": "So,",
+        "start": 188.436,
+        "end": 188.896
+      },
+      {
+        "word": "both",
+        "start": 189.076,
+        "end": 189.316
+      },
+      {
+        "word": "the",
+        "start": 189.316,
+        "end": 190.136
+      },
+      {
+        "word": "numerical",
+        "start": 190.136,
+        "end": 190.136
+      },
+      {
+        "word": "analysis",
+        "start": 190.136,
+        "end": 190.676
+      },
+      {
+        "word": "and",
+        "start": 190.676,
+        "end": 191.316
+      },
+      {
+        "word": "the",
+        "start": 191.316,
+        "end": 192.036
+      },
+      {
+        "word": "prototype",
+        "start": 192.036,
+        "end": 192.036
+      },
+      {
+        "word": "result",
+        "start": 192.036,
+        "end": 192.576
+      },
+      {
+        "word": "support",
+        "start": 192.576,
+        "end": 193.216
+      },
+      {
+        "word": "the",
+        "start": 193.216,
+        "end": 193.596
+      },
+      {
+        "word": "effectiveness",
+        "start": 193.596,
+        "end": 194.136
+      },
+      {
+        "word": "of",
+        "start": 194.136,
+        "end": 194.836
+      },
+      {
+        "word": "the",
+        "start": 194.836,
+        "end": 195.176
+      },
+      {
+        "word": "proposed",
+        "start": 195.176,
+        "end": 195.616
+      },
+      {
+        "word": "rotor",
+        "start": 195.616,
+        "end": 196.016
+      },
+      {
+        "word": "structure.",
+        "start": 196.016,
+        "end": 196.456
+      }
+    ],
+    "transcriptText": "So, both the numerical analysis and the prototype result support the effectiveness of the proposed rotor structure."
+  },
+  {
+    "index": 19,
+    "start": 199.838,
+    "end": 218.44,
+    "speechEnd": 215.44,
+    "duration": 18.602,
+    "text": "In conclusion, the proposed spoke-based inverted triangle memory motor reduces q-axis harmonic flux, lowers iron loss, and improves high-speed efficiency without sacrificing torque.",
+    "words": [
+      {
+        "word": "In",
+        "start": 199.838,
+        "end": 200.198
+      },
+      {
+        "word": "conclusion,",
+        "start": 200.198,
+        "end": 200.758
+      },
+      {
+        "word": "the",
+        "start": 201.278,
+        "end": 202.238
+      },
+      {
+        "word": "proposed",
+        "start": 202.238,
+        "end": 202.238
+      },
+      {
+        "word": "spoke-based",
+        "start": 202.238,
+        "end": 202.818
+      },
+      {
+        "word": "inverted",
+        "start": 202.818,
+        "end": 203.278
+      },
+      {
+        "word": "triangle",
+        "start": 203.278,
+        "end": 203.818
+      },
+      {
+        "word": "memory",
+        "start": 203.818,
+        "end": 204.378
+      },
+      {
+        "word": "motor",
+        "start": 204.378,
+        "end": 204.838
+      },
+      {
+        "word": "reduces",
+        "start": 204.838,
+        "end": 205.298
+      },
+      {
+        "word": "q-axis",
+        "start": 205.298,
+        "end": 206.318
+      },
+      {
+        "word": "harmonic",
+        "start": 206.318,
+        "end": 206.978
+      },
+      {
+        "word": "flux,",
+        "start": 206.978,
+        "end": 207.198
+      },
+      {
+        "word": "lowers",
+        "start": 207.198,
+        "end": 207.798
+      },
+      {
+        "word": "iron",
+        "start": 207.798,
+        "end": 208.258
+      },
+      {
+        "word": "loss,",
+        "start": 209.498,
+        "end": 209.498
+      },
+      {
+        "word": "and",
+        "start": 209.498,
+        "end": 209.918
+      },
+      {
+        "word": "improves",
+        "start": 209.918,
+        "end": 210.318
+      },
+      {
+        "word": "high-speed",
+        "start": 210.938,
+        "end": 211.218
+      },
+      {
+        "word": "efficiency",
+        "start": 211.218,
+        "end": 211.578
+      },
+      {
+        "word": "without",
+        "start": 211.578,
+        "end": 212.118
+      },
+      {
+        "word": "sacrificing",
+        "start": 212.118,
+        "end": 212.298
+      },
+      {
+        "word": "torque.",
+        "start": 212.298,
+        "end": 212.898
+      }
+    ],
+    "transcriptText": "In conclusion, the proposed spoke-based inverted triangle memory motor reduces q-axis harmonic flux, lowers iron loss, and improves high-speed efficiency without sacrificing torque."
+  },
+  {
+    "index": 20,
+    "start": 218.44,
+    "end": 225.818,
+    "speechEnd": 222.818,
+    "duration": 7.377,
+    "text": "Thank you very much for your attention.",
+    "words": [
+      {
+        "word": "Thank",
+        "start": 218.44,
+        "end": 218.721
+      },
+      {
+        "word": "you",
+        "start": 218.721,
+        "end": 218.86
+      },
+      {
+        "word": "very",
+        "start": 218.86,
+        "end": 219.4
+      },
+      {
+        "word": "much",
+        "start": 219.4,
+        "end": 219.7
+      },
+      {
+        "word": "for",
+        "start": 219.7,
+        "end": 220.021
+      },
+      {
+        "word": "your",
+        "start": 220.021,
+        "end": 220.301
+      },
+      {
+        "word": "attention.",
+        "start": 220.301,
+        "end": 220.581
+      }
+    ],
+    "transcriptText": "Thank you very much for your attention."
+  }
+];
+    const sections = [
+  {
+    "label": "Opening",
+    "startIndex": 1,
+    "endIndex": 3
+  },
+  {
+    "label": "Problem",
+    "startIndex": 4,
+    "endIndex": 6
+  },
+  {
+    "label": "Proposal",
+    "startIndex": 7,
+    "endIndex": 10
+  },
+  {
+    "label": "Results",
+    "startIndex": 11,
+    "endIndex": 15
+  },
+  {
+    "label": "Prototype",
+    "startIndex": 16,
+    "endIndex": 18
+  },
+  {
+    "label": "Conclusion",
+    "startIndex": 19,
+    "endIndex": 20
+  }
+];
+    const bilingual = [
+  {
+    "translation": "皆さん、こんにちは。",
+    "audio": "assets/ja/sentence_001.mp3",
+    "englishAudio": "assets/en/sentence_001.mp3"
+  },
+  {
+    "translation": "私たちのポスターにお越しいただきありがとうございます。",
+    "audio": "assets/ja/sentence_002.mp3",
+    "englishAudio": "assets/en/sentence_002.mp3"
+  },
+  {
+    "translation": "私の名前は大塚亮之介です。家庭用機器の駆動システムにおけるメモリモーターの効率向上に関する研究を説明します。",
+    "audio": "assets/ja/sentence_003.mp3",
+    "englishAudio": "assets/en/sentence_003.mp3"
+  },
+  {
+    "translation": "このポスターは、従来のメモリモーターにおける1つの重要な問題に焦点を当てています。",
+    "audio": "assets/ja/sentence_004.mp3",
+    "englishAudio": "assets/en/sentence_004.mp3"
+  },
+  {
+    "translation": "脱磁状態では、従来のV字型ローターが強いq軸高調波フラックスの変動を生み出します。",
+    "audio": "assets/ja/sentence_005.mp3",
+    "englishAudio": "assets/en/sentence_005.mp3"
+  },
+  {
+    "translation": "その高調波フラックスは鉄損を増加させ、高速領域での効率的な動作を妨げます。",
+    "audio": "assets/ja/sentence_006.mp3",
+    "englishAudio": "assets/en/sentence_006.mp3"
+  },
+  {
+    "translation": "この問題を解決するために、スポークベースの逆三角形磁石配置を提案します。",
+    "audio": "assets/ja/sentence_007.mp3",
+    "englishAudio": "assets/en/sentence_007.mp3"
+  },
+  {
+    "translation": "さらに、q軸フラックスの変動をさらに抑制するために、サリエントポールローターのバージョンも検討します。",
+    "audio": "assets/ja/sentence_008.mp3",
+    "englishAudio": "assets/en/sentence_008.mp3"
+  },
+  {
+    "translation": "ポスターの左中央側には、モーターの構造と設計コンセプトが示されています。",
+    "audio": "assets/ja/sentence_009.mp3",
+    "englishAudio": "assets/en/sentence_009.mp3"
+  },
+  {
+    "translation": "主なポイントは、提案された構造が脱磁状態におけるエアギャップフラックス分布を滑らかにすることです。",
+    "audio": "assets/ja/sentence_010.mp3",
+    "englishAudio": "assets/en/sentence_010.mp3"
+  },
+  {
+    "translation": "右側には、数値結果が示されており、エアギャップフラックス密度の総高調波歪みが23.5パーセントから18.3パーセントに減少しています。",
+    "audio": "assets/ja/sentence_011.mp3",
+    "englishAudio": "assets/en/sentence_011.mp3"
+  },
+  {
+    "translation": "この減少は、鉄損の低下と高速での高効率動作範囲の拡大に直接つながります。",
+    "audio": "assets/ja/sentence_012.mp3",
+    "englishAudio": "assets/en/sentence_012.mp3"
+  },
+  {
+    "translation": "同時に、トルク出力は従来のモーターと同等のままです。",
+    "audio": "assets/ja/sentence_013.mp3",
+    "englishAudio": "assets/en/sentence_013.mp3"
+  },
+  {
+    "translation": "また、機械的な利点も確認しました。",
+    "audio": "assets/ja/sentence_014.mp3",
+    "englishAudio": "assets/en/sentence_014.mp3"
+  },
+  {
+    "translation": "毎分20,000回転で、最大フォンミーゼス応力が346メガパスカルから291メガパスカルに減少します。",
+    "audio": "assets/ja/sentence_015.mp3",
+    "englishAudio": "assets/en/sentence_015.mp3"
+  },
+  {
+    "translation": "ポスターの下部には、プロトタイプの検証を示しています。",
+    "audio": "assets/ja/sentence_016.mp3",
+    "englishAudio": "assets/en/sentence_016.mp3"
+  },
+  {
+    "translation": "測定された誘導電圧は、モーターが意図した通りに磁化状態と脱磁状態を切り替えられることを確認しています。",
+    "audio": "assets/ja/sentence_017.mp3",
+    "englishAudio": "assets/en/sentence_017.mp3"
+  },
+  {
+    "translation": "したがって、数値解析とプロトタイプの結果の両方が、提案されたローター構造の有効性を支持しています。",
+    "audio": "assets/ja/sentence_018.mp3",
+    "englishAudio": "assets/en/sentence_018.mp3"
+  },
+  {
+    "translation": "結論として、提案されたスポークベースの逆三角形メモリモーターは、q軸高調波フラックスを減少させ、鉄損を低下させ、高速効率を改善しながらトルクを犠牲にしません。",
+    "audio": "assets/ja/sentence_019.mp3",
+    "englishAudio": "assets/en/sentence_019.mp3"
+  },
+  {
+    "translation": "ご清聴ありがとうございました。",
+    "audio": "assets/ja/sentence_020.mp3",
+    "englishAudio": "assets/en/sentence_020.mp3"
+  }
+];
+
+    const audio = document.getElementById("audio");
+    const currentText = document.getElementById("currentText");
+    const currentTranslation = document.getElementById("currentTranslation");
+    const currentIndex = document.getElementById("currentIndex");
+    const currentSection = document.getElementById("currentSection");
+    const currentMode = document.getElementById("currentMode");
+    const progressFill = document.getElementById("progressFill");
+    const elapsed = document.getElementById("elapsed");
+    const remaining = document.getElementById("remaining");
+    const sentenceList = document.getElementById("sentenceList");
+    const sectionRow = document.getElementById("sectionRow");
+    const autoScrollToggle = document.getElementById("autoScrollToggle");
+    const loopToggle = document.getElementById("loopToggle");
+    const alternateToggle = document.getElementById("alternateToggle");
+
+    let activeIndex = -1;
+    let activeWordIndex = -1;
+    let autoScrollEnabled = true;
+    let loopEnabled = false;
+    let alternatingEnabled = true;
+    let playlistIndex = 0;
+    let currentLanguage = "en";
+    const totalDuration = cues.length ? (cues[cues.length - 1].end || cues[cues.length - 1].speechEnd || 0) : 0;
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;");
+    }
+
+    function prepareCueWords() {
+      cues.forEach(cue => {
+        cue.words = (cue.words || []).map((word, index) => {
+          const text = word.word || "";
+          const parts = text.match(/^(.+?)([,".;:!?)]*)$/) || [text, text, ""];
+          return {
+            index,
+            core: parts[1] || text,
+            trailing: parts[2] || "",
+            start: word.start,
+            end: word.end
+          };
+        });
+      });
+    }
+
+    function formatTime(seconds) {
+      const rounded = Math.max(0, Math.floor(seconds));
+      const mins = String(Math.floor(rounded / 60)).padStart(2, "0");
+      const secs = String(rounded % 60).padStart(2, "0");
+      return `${mins}:${secs}`;
+    }
+
+    function getSectionForCue(index) {
+      return sections.find(section => index >= section.startIndex && index <= section.endIndex) || sections[0];
+    }
+
+    function renderSections() {
+      sections.forEach(section => {
+        const button = document.createElement("button");
+        button.className = "section-chip";
+        button.type = "button";
+        button.textContent = section.label;
+        button.dataset.index = String(section.startIndex);
+        button.addEventListener("click", () => jumpToCue(section.startIndex - 1));
+        sectionRow.appendChild(button);
+      });
+    }
+
+    function renderSentences() {
+      const fragment = document.createDocumentFragment();
+      cues.forEach((cue, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "sentence";
+        button.dataset.index = String(cue.index);
+        button.innerHTML = `
+          <div class="sentence-number">
+            <strong>${cue.index}</strong>
+            <span>${formatTime(cue.start)}</span>
+          </div>
+          <div>
+            <div class="sentence-text" id="sentenceText${cue.index}">${escapeHtml(cue.text)}</div>
+            <div class="sentence-jp">${escapeHtml(bilingual[index].translation)}</div>
+          </div>
+        `;
+        button.addEventListener("click", () => jumpToCue(index));
+        fragment.appendChild(button);
+      });
+      sentenceList.appendChild(fragment);
+    }
+
+    function renderWordMarkup(words, activeWord) {
+      return words.map(word => {
+        const currentClass = word.index === activeWord ? "word current-word" : "word";
+        return `<span class="${currentClass}">${escapeHtml(word.core)}</span>${escapeHtml(word.trailing)}`;
+      }).join("");
+    }
+
+    function findCurrentWordIndex(cue, time) {
+      if (!cue.words || cue.words.length === 0) return -1;
+      if (cue.speechEnd !== undefined && time >= cue.speechEnd) return -1;
+      for (let i = cue.words.length - 1; i >= 0; i -= 1) {
+        if (time >= cue.words[i].start) return i;
+      }
+      return 0;
+    }
+
+    function jumpToCue(index) {
+      playlistIndex = index;
+      currentLanguage = "en";
+      activeWordIndex = -1;
+      loadCurrentClip();
+      audio.currentTime = 0;
+      audio.play();
+      updateUIForCurrentClip();
+    }
+
+    function setCurrentMode() {
+      currentMode.textContent = currentLanguage === "ja" ? "Japanese" : "English";
+    }
+
+    function loadCurrentClip() {
+      const entry = bilingual[playlistIndex];
+      if (!entry) return;
+      audio.src = currentLanguage === "ja" ? entry.audio : entry.englishAudio;
+      audio.load();
+      setCurrentMode();
+    }
+
+    function syncHighlights(index) {
+      if (index === activeIndex) return;
+      activeIndex = index;
+      activeWordIndex = -1;
+      const cue = cues[index];
+      const section = getSectionForCue(cue.index);
+      currentText.innerHTML = renderWordMarkup(cue.words, -1);
+      currentTranslation.textContent = bilingual[index].translation;
+      currentIndex.textContent = `Sentence ${cue.index}`;
+      currentSection.textContent = section.label;
+
+      cues.forEach(item => {
+        const textNode = document.getElementById(`sentenceText${item.index}`);
+        if (textNode) textNode.innerHTML = escapeHtml(item.text);
+      });
+
+      sentenceList.querySelectorAll(".sentence").forEach(node => {
+        const nodeIndex = Number(node.dataset.index);
+        node.classList.toggle("current", nodeIndex === cue.index);
+        node.classList.toggle("active", nodeIndex <= cue.index);
+      });
+
+      sectionRow.querySelectorAll(".section-chip").forEach(node => {
+        node.classList.toggle("active", Number(node.dataset.index) === section.startIndex);
+      });
+
+      const currentNode = sentenceList.querySelector(`.sentence[data-index="${cue.index}"]`);
+      if (currentNode && autoScrollEnabled) {
+        currentNode.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+
+    function syncWordHighlightForClip(time) {
+      const cue = cues[playlistIndex];
+      if (!cue || !cue.words) return;
+      if (currentLanguage !== "en") {
+        if (activeWordIndex !== -1) {
+          activeWordIndex = -1;
+          currentText.innerHTML = renderWordMarkup(cue.words, -1);
+          const listText = document.getElementById(`sentenceText${cue.index}`);
+          if (listText) listText.innerHTML = renderWordMarkup(cue.words, -1);
+        }
+        return;
+      }
+      const relativeWords = cue.words.map(word => ({
+        ...word,
+        start: Math.max(0, word.start - cue.start),
+        end: Math.max(0, word.end - cue.start)
+      }));
+      const wordIndex = findCurrentWordIndex({ ...cue, words: relativeWords, speechEnd: Math.max(0, (cue.speechEnd ?? cue.end) - cue.start) }, time);
+      if (wordIndex === activeWordIndex) return;
+      activeWordIndex = wordIndex;
+      currentText.innerHTML = renderWordMarkup(cue.words, wordIndex);
+      const listText = document.getElementById(`sentenceText${cue.index}`);
+      if (listText) listText.innerHTML = renderWordMarkup(cue.words, wordIndex);
+    }
+
+    function updateProgress() {
+      const cue = cues[playlistIndex];
+      if (!cue) return;
+      const englishNow = currentLanguage === "en" ? (audio.currentTime || 0) : (cue.end - cue.start);
+      const now = Math.min(totalDuration, cue.start + englishNow);
+      const duration = totalDuration;
+      const percent = duration ? (now / duration) * 100 : 0;
+      progressFill.style.width = `${percent}%`;
+      elapsed.textContent = formatTime(now);
+      remaining.textContent = `-${formatTime(duration - now)}`;
+    }
+
+    function updateUIForCurrentClip() {
+      syncHighlights(playlistIndex);
+      syncWordHighlightForClip(audio.currentTime || 0);
+      updateProgress();
+    }
+
+    autoScrollToggle.addEventListener("change", () => {
+      autoScrollEnabled = autoScrollToggle.checked;
+    });
+    loopToggle.addEventListener("change", () => {
+      loopEnabled = loopToggle.checked;
+    });
+    alternateToggle.addEventListener("change", () => {
+      alternatingEnabled = alternateToggle.checked;
+    });
+
+    prepareCueWords();
+    renderSections();
+    renderSentences();
+    syncHighlights(0);
+    syncWordHighlightForClip(0);
+    updateProgress();
+    loadCurrentClip();
+
+    audio.addEventListener("loadedmetadata", () => {
+      updateUIForCurrentClip();
+    });
+    audio.addEventListener("timeupdate", () => {
+      updateUIForCurrentClip();
+    });
+    audio.addEventListener("play", () => {
+      setCurrentMode();
+      updateUIForCurrentClip();
+    });
+    audio.addEventListener("ended", () => {
+      if (currentLanguage === "en" && alternatingEnabled) {
+        currentLanguage = "ja";
+        loadCurrentClip();
+        audio.play();
+        return;
+      }
+      playlistIndex += 1;
+      currentLanguage = "en";
+      activeWordIndex = -1;
+      if (playlistIndex < cues.length) {
+        loadCurrentClip();
+        audio.play();
+        return;
+      }
+      if (loopEnabled && cues.length > 0) {
+        playlistIndex = 0;
+        loadCurrentClip();
+        audio.play();
+      }
+    });
+  </script>
+</body>
+</html>
